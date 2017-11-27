@@ -1,0 +1,32 @@
+---
+- name: Add apt source
+  apt_repository:
+    repo: "deb http://www.ubnt.com/downloads/unifi/debian stable ubiquiti"
+
+- name: Add apt key
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: C0A52C50
+
+- name: Update repositories cache
+  apt:
+    update_cache: true
+  changed_when: false
+
+- name: Install unifi
+  apt:
+    name: unifi
+  notify: Restart unifi
+
+- name: Enable unifi
+  service:
+    name: unifi.service
+    enabled: true
+
+- name: Write system.properties
+  lineinfile:
+    path: /var/lib/unifi/system.properties
+    regexp: "^{{ item.key }}="
+    line: "{{ item.key }}={{ item.value }}"
+  with_dict: "{{ unifi_system_properties }}"
+  notify: Restart unifi
