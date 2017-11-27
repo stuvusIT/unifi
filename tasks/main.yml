@@ -1,0 +1,25 @@
+---
+- name: Add apt source
+  apt_repository:
+    repo: "deb http://www.ubnt.com/downloads/unifi/debian stable ubiquiti"
+
+- name: Add apt key
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: C0A52C50
+
+- name: Update repositories cache
+  apt:
+    update_cache: true
+  changed_when: false
+
+- name: Install unifi
+  apt:
+    name: unifi
+  register: pkg
+
+- name: Enable and (re)start unifi
+  service:
+    name: unifi.service
+    state: "{% if pkg.changed %}restarted{% else %}started{% endif %}"
+    enabled: true
