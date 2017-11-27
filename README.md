@@ -6,12 +6,20 @@ This role installs the ubiquiti unifi controller software.
 
 Ubuntu
 
+## Role Variables
+
+| Name                      | Default | Description                                                                                                                                                                              |
+|---------------------------|:-------:|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `unifi_system_properties` | `{}`    | Dict of settings to write to system.properties. See the [documentation](https://help.ubnt.com/hc/en-us/articles/205202580-UniFi-system-properties-File-Explanation) for more information |
+
 ## Example Playbook
 
 ```yml
 - hosts: wifi
   roles:
     - unifi
+      unifi_system_properties:
+        unifi.http.port: 8000
 ```
 
 ## License

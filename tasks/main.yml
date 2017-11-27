@@ -16,10 +16,17 @@
 - name: Install unifi
   apt:
     name: unifi
-  register: pkg
+  notify: Restart unifi
 
-- name: Enable and (re)start unifi
+- name: Enable unifi
   service:
     name: unifi.service
-    state: "{% if pkg.changed %}restarted{% else %}started{% endif %}"
     enabled: true
+
+- name: Write system.properties
+  lineinfile:
+    path: /var/lib/unifi/system.properties
+    regexp: "^{{ item.key }}="
+    line: "{{ item.key }}={{ item.value }}"
+  with_dict: "{{ unifi_system_properties }}"
+  notify: Restart unifi
